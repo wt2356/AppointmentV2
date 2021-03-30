@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("hello")
     public String hello(){
-        return "helloView";
+        return "test/helloView";
     }
     @GetMapping("getMain")
     public String getMain(){

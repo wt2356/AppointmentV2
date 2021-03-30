@@ -2,11 +2,16 @@ package cdu.jaav.service.impl;
 
 import cdu.jaav.dao.StudentDao;
 import cdu.jaav.entity.Student;
+import cdu.jaav.entity.utils.PageTransformate;
+import cdu.jaav.entity.utils.ResponseData;
+import cdu.jaav.entity.utils.ResultEnums;
 import cdu.jaav.service.StudentService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Student)表服务实现类
@@ -32,14 +37,18 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * 查询多条数据
-     *
-     * @param offset 查询起始位置
+     * @param page  页码
      * @param limit  查询条数
-     * @return 对象列表
+     * @return
      */
     @Override
-    public List<Student> queryAllByLimit(int offset, int limit) {
-        return this.studentDao.queryAllByLimit(offset, limit);
+    public ResponseData<List> queryAllByLimit(int page, int limit) {
+        List<Integer> pageTransfor = PageTransformate.pageTransfor(page, limit);
+        List<Student> students = studentDao.queryAllByLimit(pageTransfor.get(0), pageTransfor.get(1));
+        Map<String, String> map = new HashMap<>();
+        map.put("key","all");
+        int i=studentDao.queryAllCount(map);
+        return new ResponseData<>(ResultEnums.SUCCESS,students);
     }
 
     /**

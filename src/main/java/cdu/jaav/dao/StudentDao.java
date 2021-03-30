@@ -4,6 +4,7 @@ import cdu.jaav.entity.Student;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Student)表数据库访问层
@@ -79,4 +80,5 @@ public interface StudentDao {
      */
     int deleteById(int sId);
 
+    int queryAllCount(@Param("map") Map<String, String> map);
 }

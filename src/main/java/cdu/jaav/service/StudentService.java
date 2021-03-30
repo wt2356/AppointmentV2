@@ -1,6 +1,7 @@
 package cdu.jaav.service;
 
 import cdu.jaav.entity.Student;
+import cdu.jaav.entity.utils.ResponseData;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface StudentService {
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<Student> queryAllByLimit(int offset, int limit);
+    ResponseData<List> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
