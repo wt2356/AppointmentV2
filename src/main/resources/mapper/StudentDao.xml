@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cdu.jaav.dao.StudentDao">
+
+    <resultMap type="cdu.jaav.entity.Student" id="StudentMap">
+        <result property="sId" column="s_id" jdbcType="INTEGER"/>
+        <result property="pwd" column="pwd" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="flag" column="flag" jdbcType="INTEGER"/>
+        <result property="time" column="time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="StudentMap">
+        select
+          s_id, pwd, status, name, flag, time
+        from library.student
+        where s_id = #{sId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="StudentMap">
+        select
+          s_id, pwd, status, name, flag, time
+        from library.student
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="StudentMap">
+        select
+        s_id, pwd, status, name, flag, time
+        from library.student
+        <where>
+            <if test="sId != null">
+                and s_id = #{sId}
+            </if>
+            <if test="pwd != null and pwd != ''">
+                and pwd = #{pwd}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag}
+            </if>
+            <if test="time != null">
+                and time = #{time}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sId" useGeneratedKeys="true">
+        insert into library.student(pwd, status, name, flag, time)
+        values (#{pwd}, #{status}, #{name}, #{flag}, #{time})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="sId" useGeneratedKeys="true">
+        insert into library.student(pwd, status, name, flag, time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pwd}, #{entity.status}, #{entity.name}, #{entity.flag}, #{entity.time})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="sId" useGeneratedKeys="true">
+        insert into library.student(pwd, status, name, flag, time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pwd}, #{entity.status}, #{entity.name}, #{entity.flag}, #{entity.time})
+        </foreach>
+        on duplicate key update
+        pwd = values(pwd) , status = values(status) , name = values(name) , flag = values(flag) , time = values(time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update library.student
+        <set>
+            <if test="pwd != null and pwd != ''">
+                pwd = #{pwd},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+        </set>
+        where s_id = #{sId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from library.student where s_id = #{sId}
+    </delete>
+
+</mapper>

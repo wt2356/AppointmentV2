@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cdu.jaav.dao.NoteDao">
+
+    <resultMap type="cdu.jaav.entity.Note" id="NoteMap">
+        <result property="nId" column="n_id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="mId" column="m_id" jdbcType="INTEGER"/>
+        <result property="time" column="time" jdbcType="TIMESTAMP"/>
+        <result property="text" column="text" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="NoteMap">
+        select
+          n_id, title, m_id, time, text
+        from library.note
+        where n_id = #{nId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="NoteMap">
+        select
+          n_id, title, m_id, time, text
+        from library.note
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="NoteMap">
+        select
+        n_id, title, m_id, time, text
+        from library.note
+        <where>
+            <if test="nId != null">
+                and n_id = #{nId}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="mId != null">
+                and m_id = #{mId}
+            </if>
+            <if test="time != null">
+                and time = #{time}
+            </if>
+            <if test="text != null and text != ''">
+                and text = #{text}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="nId" useGeneratedKeys="true">
+        insert into library.note(title, m_id, time, text)
+        values (#{title}, #{mId}, #{time}, #{text})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="nId" useGeneratedKeys="true">
+        insert into library.note(title, m_id, time, text)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.mId}, #{entity.time}, #{entity.text})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="nId" useGeneratedKeys="true">
+        insert into library.note(title, m_id, time, text)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.mId}, #{entity.time}, #{entity.text})
+        </foreach>
+        on duplicate key update
+        title = values(title) , m_id = values(m_id) , time = values(time) , text = values(text)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update library.note
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="mId != null">
+                m_id = #{mId},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="text != null and text != ''">
+                text = #{text},
+            </if>
+        </set>
+        where n_id = #{nId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from library.note where n_id = #{nId}
+    </delete>
+
+</mapper>
